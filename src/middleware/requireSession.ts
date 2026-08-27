@@ -1,5 +1,6 @@
 import type {Request,Response,NextFunction} from "express"
 import { descopeClient } from "../config/descope.js";
+import { ensureUser } from "../repositories/user.repository.js";
 
 export type AuthContext = {
     authUserId:string;
@@ -39,14 +40,22 @@ export async function requireSession (
         return
         }
         const email = typeof claims.email ==="string"?claims.email:undefined
-
-        //user
-
+        const user = await ensureUser({authUserId,email})
         
+        //add auth info ur req object
+        req.auth={
+            authUserId,
+            email,
+            name:typeof claims.name ==="string"?claims.name:undefined,
+            userId:user.id,
+            token:claims
+        }
+        next()
+
 
     }
     catch(error)
     {
-
+        res.status(401).json({error:"Session Expired"})
     }
 }

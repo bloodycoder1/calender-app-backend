@@ -16,6 +16,8 @@ async function main(){
         return name.endsWith(".sql")
     }).sort();
     const pool = getPool()
+    console.log(files);
+    
     for(const file of files)
     {
         const sql = readFileSync(resolve(sqlDir,file),"utf-8")

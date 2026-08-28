@@ -1,7 +1,8 @@
 import "dotenv/config"
 import cors from "cors"
 import express from "express"
-import {getPool} from "./db/pool"
+import {getPool} from "./db/pool.js"
+import { connectionRouter } from "./routes/connection.routes.js";
 const app = express();
 const port = Number(process.env.PORT)||4000
 const appOrigin = process.env.APP_URL ?? "http://localhost:3000" 
@@ -33,6 +34,7 @@ app.get("/health",async(req,res)=>{
         })
     }
 })
+app.use("/api/connections", connectionRouter)
 app.listen(port,()=>{
     console.log("We are running at the ", port);
     
